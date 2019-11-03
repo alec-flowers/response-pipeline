@@ -15,6 +15,15 @@ from packages.utils import get_first_verb, get_char_num
 app = Flask(__name__)
 
 def tokenize(text):
+    """
+        Split text and lemmatize text. 
+        
+        Input:
+            text
+
+        Output:
+            clean_tokens (lst) : Cleaned text
+    """
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -39,7 +48,6 @@ model = joblib.load("../models/model.pkl")
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
 
@@ -49,8 +57,7 @@ def index():
     number_of_classifications = list(df.iloc[:,4:].sum(axis=1).value_counts().index)
     number_of_messages = list(df.iloc[:,4:].sum(axis=1).value_counts().values)
 
-    # create visuals
-    # TODO: Below is an example - modify to create your own visuals
+
     graphs = [
         {
             'data': [
@@ -70,7 +77,6 @@ def index():
                 }
             }
         },
-
         {
             'data': [
                 Bar(
@@ -95,6 +101,7 @@ def index():
                 }
             }
         },
+        #
         {
             'data': [
                 Bar(
@@ -108,7 +115,7 @@ def index():
             ],
 
             'layout': {
-                'title': 'Distribution of Message Classification',
+                'title': 'Distribution of number of message classifications',
                 'yaxis': {
                     'title': "Number of Messages"
                 },

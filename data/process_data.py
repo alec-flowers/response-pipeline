@@ -7,8 +7,12 @@ def load_data(message_path,categories_path):
     """
     Load message & category data and merge on commmon id.
 
+    Input:
+        message_path (str) : path to message data
+        categories_path (str) : path to categories data
+
     Output: 
-    df (dataframe) : merged message & category data
+        df (dataframe) : merged message & category data
     """
     messages_df = pd.read_csv(message_path)
     categories_df = pd.read_csv(categories_path)
@@ -21,8 +25,11 @@ def etl_pipeline(df):
     """
     Cleans merged data by naming columns, extracting binary variables, and taking out duplicates.
     
+    Input:
+        df (datafrme) : Unclean dataframe
+
     Output:
-    df (dataframe) : Cleaned dataframe
+        df (dataframe) : Cleaned dataframe
     """
 
     #Pull column names from data and label columns
@@ -48,8 +55,13 @@ def etl_pipeline(df):
 def save_data(df,database_filepath):
     """
     Create SQL Lite database to store the cleaned data.
+    
+    Input:
+        df (dataframe)
+        database_filepath (str)
+
     Output:
-    sqlite database
+        sqlite database
     """
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     df.to_sql('cleaned_disaster_data', engine, index=False)

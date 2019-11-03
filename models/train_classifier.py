@@ -29,11 +29,14 @@ from packages.utils import get_first_verb, get_char_num
 def load_data(database_filepath):
     """
     Load cleaned data from SQL Lite database and break it up into X (data) and y (labels).
+    
+    Input:
+        database_filepath (str) : name you want to call database
 
     Output:
-    X (list) : Message data in string format
-    y (dataframe) : Classification labels for the messagew data
-    y.columns (list) : List of column names
+        X (list) : Message data in string format
+        y (dataframe) : Classification labels for the messagew data
+        y.columns (list) : List of column names
     """
     engine = create_engine('sqlite:///../data/{}'.format(database_filepath))
     conn = engine.connect()
@@ -104,6 +107,15 @@ def evaluate_model(model,X_test,y_true,category_names):
     """
     Predict test data labels. Print out various model evaluation metrics
     comparing test and actual labels. 
+
+    Input:
+        model (GridSearchCV): 
+        X_test : test data model has never seen before
+        y_test : test labels to compare to truth
+        category_names (list): Names of classification columns to label data
+
+    Output:
+        None : Print out various metrics
     """
     y_pred = pd.DataFrame(model.predict(X_test),columns = category_names)
     y_true = pd.DataFrame(y_true,columns = category_names)
