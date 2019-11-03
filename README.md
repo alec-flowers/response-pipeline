@@ -46,7 +46,7 @@ I built two additional visualizations of our data that
 ## Instructions to Run:
 In the projects root directory run these commands
 1) ETL Pipeline - Clean data and store in SQLite
-- `python data/process_data.py messages.csv categories.csv DisasterResponse.db`
+- `python data/process_data.py data/messages.csv data/categories.csv /data/DisasterResponse.db`
 
 2) ML pipeline - train random forest classifier and saves
 - `python models/train_classifier.py DisasterResponse.db classifier.pkl`

@@ -38,7 +38,7 @@ def load_data(database_filepath):
         y (dataframe) : Classification labels for the messagew data
         y.columns (list) : List of column names
     """
-    engine = create_engine('sqlite:///../data/{}'.format(database_filepath))
+    engine = create_engine('sqlite:///data/{}'.format(database_filepath))
     conn = engine.connect()
     df = pd.read_sql_query(""" Select * FROM cleaned_disaster_data""",conn)
     X = df.message.values
@@ -87,10 +87,10 @@ def build_model():
         ('clf', RandomForestClassifier())
     ])
     parameters = {
-        #'clf__min_samples_split': [3, 5, 10], 
-        'clf__n_estimators' : [10],      #[100, 300],
-        'clf__max_depth': [5]             #[3, 5, 15, 25],
-        #'clf__max_features': [3, 5, 10, 20]
+        'clf__min_samples_split': [3, 5, 10], 
+        'clf__n_estimators' : [100, 300],
+        'clf__max_depth': [3, 5, 15, 25],
+        'clf__max_features': [3, 5, 10, 20]
         }
 
     scorers = {

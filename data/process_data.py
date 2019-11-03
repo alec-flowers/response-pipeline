@@ -63,7 +63,7 @@ def save_data(df,database_filepath):
     Output:
         sqlite database
     """
-    engine = create_engine('sqlite:///{}'.format(database_filepath))
+    engine = create_engine('sqlite://{}'.format(database_filepath))
     df.to_sql('cleaned_disaster_data', engine, index=False)
 
 
