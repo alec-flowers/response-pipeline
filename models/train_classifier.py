@@ -20,12 +20,11 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.multioutput import MultiOutputClassifier
 from sklearn.externals import joblib
-
+from packages.utils import get_first_verb, get_char_num
 
 def load_data(database_filepath):
     """
@@ -33,10 +32,10 @@ def load_data(database_filepath):
 
     Output:
     X (list) : Message data in string format
-    y (dataframe) : Classification labels for the message data
+    y (dataframe) : Classification labels for the messagew data
     y.columns (list) : List of column names
     """
-    engine = create_engine('sqlite:///{}'.format(database_filepath))
+    engine = create_engine('sqlite:///../data/{}'.format(database_filepath))
     conn = engine.connect()
     df = pd.read_sql_query(""" Select * FROM cleaned_disaster_data""",conn)
     X = df.message.values
@@ -59,55 +58,6 @@ def tokenize(text):
     no_stop_words = [w for w in words if w not in stopwords.words("english")]
     lemmed_word_list = [WordNetLemmatizer().lemmatize(w).lower().strip() for w in no_stop_words]
     return lemmed_word_list
-
-class get_first_verb(BaseEstimator,TransformerMixin):
-    def starting_verb(self,text):
-        """
-        Return true if first word is a verb, otherwise return false. 
-        """
-        sent_list = sent_tokenize(text)
-        
-        for sentence in sent_list:
-            pos_tags = nltk.pos_tag(tokenize(sentence))
-            try:
-                first_word, first_tag = pos_tags[0]
-            except:
-                return False
-                continue
-            if first_tag in ['VB', 'VBP']:
-                return True
-        return False
-
-    def fit(self, X, y=None):
-        """
-        Function from baseclass. Fits data
-        """
-        return self
-
-    def transform(self, X):
-        """
-        Function from baseclass. Transforms data
-        """
-        X_tagged = pd.Series(X).apply(self.starting_verb)
-        return pd.DataFrame(X_tagged)    
-
-class get_char_num(BaseEstimator,TransformerMixin):
-    def count_char(self,text):
-        """
-        Counts number of characters
-        """
-        return len(text)
-    def fit(self,X,y=None):
-        """
-        Function from baseclass. Fits data
-        """
-        return self
-    def transform(self,X):
-        """
-        Function from baseclass. Transforms data
-        """
-        X_count = pd.Series(X).apply(self.count_char)
-        return pd.DataFrame(X_count)
 
 def build_model():
     """
@@ -155,7 +105,8 @@ def evaluate_model(model,X_test,y_true,category_names):
     Predict test data labels. Print out various model evaluation metrics
     comparing test and actual labels. 
     """
-    y_pred = pd.DataFrame(model.predict(X_test))
+    y_pred = pd.DataFrame(model.predict(X_test),columns = category_names)
+    y_true = pd.DataFrame(y_true,columns = category_names)
 
     print('Classification Report')
     print(classification_report(y_true,y_pred,target_names = category_names))
